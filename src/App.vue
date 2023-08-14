@@ -1,38 +1,172 @@
 <template>
-  <h1>Pokemon test</h1>
-  <pokemon-list></pokemon-list>
+  <the-header></the-header>
+  <base-card>
+    <base-snipper v-if="isLoading"></base-snipper>
+    <pokemon-list  v-else :results="results"></pokemon-list>
+  </base-card>
 </template>
 
 <script>
-import PokemonList from './components/pokemon/PokemonList.vue';
+import TheHeader from './components/layout/TheHeader.vue';
+import PokemonList from './pages/pokemon/PokemonList.vue';
+
 export default {
   components: {
+    TheHeader,
     PokemonList,
+  },
+  data() {
+    return {
+      results: [],
+      isLoading: false,
+    };
+  },
+  methods: {
+    async fetchPokemonData() {
+      this.isLoading = true;
+      const response = await fetch('https://api.eien-development.com/api/pokemon-api/pokemons');
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // console.log(responseData);
+        const error = new Error(responseData.message || 'Failed to fetch requests.')
+        throw error;
+      }
+      // console.log(responseData.data);
+
+      const results = [];
+
+      for (const id in responseData.data) {
+        results.push({
+          id         : responseData.data[id].id,
+          number     : responseData.data[id].number,
+          name       : responseData.data[id].name,
+          type_1     : responseData.data[id].type_1,
+          type_2     : responseData.data[id].type_2,
+          total      : responseData.data[id].total,
+          hp         : responseData.data[id].hp,
+          attack     : responseData.data[id].attack,
+          defense    : responseData.data[id].defense,
+          sp_atk     : responseData.data[id].sp_atk,
+          sp_def     : responseData.data[id].sp_def,
+          speed      : responseData.data[id].speed,
+          generation : responseData.data[id].generation,
+          legendary  : responseData.data[id].legendary,
+        })
+      }
+      
+      this.isLoading = false;
+
+      this.results = results;
+      // console.log(this.results);
+    }
+  },
+  mounted() {
+    this.fetchPokemonData();
   }
 }
 </script>
 
 <style>
+:root {
+  --orange-50 :#fff7ed;
+  --orange-100 :#ffedd5;
+  --orange-200 :#fed7aa;
+  --orange-300 :#fdba74;
+  --orange-400 :#fb923c;
+  --orange-500 :#f97316;
+  --orange-600 :#ea580c;
+  --orange-700 :#c2410c;
+  --orange-800 :#9a3412;
+  --orange-900 :#7c2d12;
+  --orange-950 :#431407;
+
+  --purple-50 : #faf5ff;
+  --purple-100 : #f3e8ff;
+  --purple-200 : #e9d5ff;
+  --purple-300 : #d8b4fe;
+  --purple-400 : #c084fc;
+  --purple-500 : #a855f7;
+  --purple-600 : #9333ea;
+  --purple-700 : #7e22ce;
+  --purple-800 : #6b21a8;
+  --purple-900 : #581c87;
+  --purple-950 : #3b0764;
+
+  --slate-600: #475569;
+  --gray-600: #4b5563;
+  --zinc-600: #52525b;
+  --neutral-600: #525252;
+  --stone-600: #57534e;
+  --red-600: #dc2626;
+  /* --orange-600: #ea580c; */
+  --amber-600: #d97706;
+  --yellow-600: #ca8a04;
+  --lime-600: #65a30d;
+  --green-600: #16a34a;
+  --emerald-600: #059669;
+  --teal-600: #0d9488;
+  --cyan-600: #0891b2;
+  --sky-600: #0284c7;
+  --blue-600: #2563eb;
+  --indigo-600: #4f46e5;
+  --violet-600: #7c3aed;
+  /* --purple-600: #9333ea; */
+  --fuchsia-600: #c026d3;
+  --pink-600: #db2777;
+  --rose-600: #e11d48;
+
+  --mdMin: 1025px;
+  --mdMax: 1024px;
+  --smMin: 768px;
+  --smMax: 767px;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #222;
 }
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
-.tag {
-  display: inline-block;
-  padding: 0.25em 0.5em;
-  background-color: #f1f1f1;
-  border-radius: 3px;
-  font-size: 80%;
-  margin: 0.2em;
+
+.bgColor-number {
+  background-color: var(--gray-600);
 }
-.tag b {
-  font-size: 120%;
+.bgColor-type_1 {
+  background-color: var(--orange-400);
+}
+.bgColor-type_2 {
+  background-color: var(--orange-800);
+}
+.bgColor-total {
+  background-color: var(--lime-600);
+}
+.bgColor-hp {
+  background-color: var(--emerald-600);
+}
+.bgColor-attack {
+  background-color: var(--red-600);
+}
+.bgColor-defense {
+  background-color: var(--cyan-600);
+}
+.bgColor-sp_atk {
+  background-color: var(--purple-400);
+}
+.bgColor-sp_def {
+  background-color: var(--purple-800);
+}
+.bgColor-speed {
+  background-color: var(--violet-600);
+}
+.bgColor-generation {
+  background-color: var(--pink-600);
+}
+.bgColor-legendary {
+  background-color: var(--lime-600);
 }
 </style>
