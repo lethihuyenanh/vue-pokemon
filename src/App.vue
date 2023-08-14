@@ -169,4 +169,33 @@ export default {
 .bgColor-legendary {
   background-color: var(--lime-600);
 }
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+
+.list li {
+  display: flex;
+  width: 25%;
+  padding: 5px 0;
+}
+
+@media screen and (max-width: 1024px) {
+  .list li {
+    width: 33.33%;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .list li {
+    width: 100%
+  }
+}
+
+.list input {
+  margin-right: 5px;
+}
+
 </style>

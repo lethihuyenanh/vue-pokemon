@@ -5,29 +5,31 @@
       <section>
         <h2>Pokemon Sort</h2>
         <pokemon-sort></pokemon-sort>
+        <pokemon-filter @change-filter="setFilters"></pokemon-filter>
       </section>
       <section>
         <h2>Pokemon List</h2>
-        <ul>
-          <li v-for="result in results" :key="result" :id="result">
-            <h3>{{ result.name }}</h3>
+        <ul class="items-wrapper" v-if="hasPokemon">
+          <li v-for="pokemon in filteredPokemons" :key="pokemon" :id="pokemon">
+            <h3>{{ pokemon.name }}</h3>
             <div class="badge-list">
-              <base-badge mode='bgColor-number' v-if="result.number">number: <b>{{ result.number }}</b></base-badge>
-              <base-badge mode='bgColor-type_1' v-if="result.type_1">type_1: <b>{{ result.type_1 }}</b></base-badge>
-              <base-badge mode='bgColor-type_2' v-if="result.type_2">type_2: <b>{{ result.type_2 }}</b></base-badge>
-              <base-badge mode='bgColor-total' v-if="result.total">total: <b>{{ result.total }}</b></base-badge>
-              <base-badge mode='bgColor-hp' v-if="result.hp">hp: <b>{{ result.hp }}</b></base-badge>
-              <base-badge mode='bgColor-attack' v-if="result.attack">attack: <b>{{ result.attack }}</b></base-badge>
-              <base-badge mode='bgColor-defense' v-if="result.defense">defense: <b>{{ result.defense }}</b></base-badge>
-              <base-badge mode='bgColor-sp_atk' v-if="result.sp_atk">sp_atk: <b>{{ result.sp_atk }}</b></base-badge>
-              <base-badge mode='bgColor-sp_def' v-if="result.sp_def">sp_def: <b>{{ result.sp_def }}</b></base-badge>
-              <base-badge mode='bgColor-speed' v-if="result.speed">speed: <b>{{ result.speed }}</b></base-badge>
-              <base-badge mode='bgColor-generation' v-if="result.generation">generation: <b>{{ result.generation
+              <base-badge mode='bgColor-number' v-if="pokemon.number">number: <b>{{ pokemon.number }}</b></base-badge>
+              <base-badge mode='bgColor-type_1' v-if="pokemon.type_1">type_1: <b>{{ pokemon.type_1 }}</b></base-badge>
+              <base-badge mode='bgColor-type_2' v-if="pokemon.type_2">type_2: <b>{{ pokemon.type_2 }}</b></base-badge>
+              <base-badge mode='bgColor-total' v-if="pokemon.total">total: <b>{{ pokemon.total }}</b></base-badge>
+              <base-badge mode='bgColor-hp' v-if="pokemon.hp">hp: <b>{{ pokemon.hp }}</b></base-badge>
+              <base-badge mode='bgColor-attack' v-if="pokemon.attack">attack: <b>{{ pokemon.attack }}</b></base-badge>
+              <base-badge mode='bgColor-defense' v-if="pokemon.defense">defense: <b>{{ pokemon.defense }}</b></base-badge>
+              <base-badge mode='bgColor-sp_atk' v-if="pokemon.sp_atk">sp_atk: <b>{{ pokemon.sp_atk }}</b></base-badge>
+              <base-badge mode='bgColor-sp_def' v-if="pokemon.sp_def">sp_def: <b>{{ pokemon.sp_def }}</b></base-badge>
+              <base-badge mode='bgColor-speed' v-if="pokemon.speed">speed: <b>{{ pokemon.speed }}</b></base-badge>
+              <base-badge mode='bgColor-generation' v-if="pokemon.generation">generation: <b>{{ pokemon.generation
               }}</b></base-badge>
-              <base-badge mode='bgColor-legendary' v-if="result.legendary">legendary: <b>{{ result.legendary }}</b></base-badge>
+              <base-badge mode='bgColor-legendary' v-if="pokemon.legendary">legendary: <b>{{ pokemon.legendary }}</b></base-badge>
             </div>
           </li>
         </ul>
+        <p v-else class="empty">There is no Pokemon!</p>
       </section>
     </div>
   </base-card>
@@ -35,12 +37,44 @@
 
 <script>
 import PokemonSort from '../../components/pokemon/PokemonSort.vue';
+import PokemonFilter from '../../components/pokemon/PokemonFilter.vue';
 
 export default {
   components: {
     PokemonSort,
+    PokemonFilter,
   },
   props: ['results'],
+  data() {
+    return {
+      activeFilters: {
+        type_1: true,
+        type_2: true,
+      }
+    }
+  },
+  computed: {
+    filteredPokemons() {
+      const pokemons = this.results;
+      return pokemons.filter((item) => {
+        if (this.activeFilters.type_1 && !!item.type_1 > 0) {
+          return true;
+        }
+        if (this.activeFilters.type_2 && !!item.type_2 > 0) {
+          return true;
+        }
+        return false;
+      });
+    },
+    hasPokemon() {
+      return !this.isLoading && this.filteredPokemons && this.filteredPokemons.length > 0;
+    }
+  },
+  methods: {
+    setFilters(updatedFilter) {
+      this.activeFilters = updatedFilter;
+    }
+  }
 }
 </script>
 
@@ -57,7 +91,7 @@ h2 {
 h3 {
   text-align: center;
 }
-ul {
+.items-wrapper {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
@@ -65,7 +99,7 @@ ul {
   padding: 10px 0;
 }
 
-ul li {
+.items-wrapper li {
   width: calc(33.33% - 20px);
   margin: 10px;
   padding: 10px;
@@ -75,18 +109,18 @@ ul li {
 }
 
 @media screen and (max-width: 1024px) {
-  /* ul li {
+  /* .items-wrapper li {
     width: calc(50% - 20px);
   } */
 }
 
 @media screen and (max-width: 767px) {
-  ul {
+  .items-wrapper {
     margin: 0;
     padding: 0;
   }
 
-  ul li {
+  .items-wrapper li {
     width: 100%;
     margin: 10px 0;
   }
@@ -107,5 +141,9 @@ ul li {
   .badge-list .badge {
     width: calc(50% - 6px);
   }
+}
+.empty {
+  text-align: center;
+  padding: 2rem 0;
 }
 </style>
