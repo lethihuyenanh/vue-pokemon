@@ -173,29 +173,47 @@ export default {
 .list {
   display: flex;
   flex-wrap: wrap;
-  margin: 10px 0;
+  margin: 10px -5px;
 }
 
 .list li {
   display: flex;
-  width: 25%;
-  padding: 5px 0;
+  width: calc(25% - 10px);
+  margin: 5px;
+  color: #FFF;
+  position: relative;
 }
 
 @media screen and (max-width: 1024px) {
   .list li {
-    width: 33.33%;
+    width: calc(33.33% - 10px);
   }
 }
 
 @media screen and (max-width: 767px) {
-  .list li {
+  /* .list li {
     width: 100%
-  }
+  } */
 }
 
+.list label {
+  display: block;
+  width: 100%;
+  padding: 0.1em;
+  padding-left: 30px;
+  border-radius: 3px;
+  box-shadow: 2px 2px 5px rgba(0,0, 0, 0.2);
+  transition: box-shadow 0.3s ease-out;
+}
 .list input {
-  margin-right: 5px;
+  /* margin-right: 5px; */
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+.list input:checked + label {
+  box-shadow: 3px 3px 5px rgba(0,0, 0, 0.5) inset;
 }
 
 </style>
