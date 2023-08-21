@@ -170,16 +170,22 @@ export default {
       this.sorting = itemId;
       this.$refs.targetRef2.scrollIntoView({ behavior: 'smooth' });
     },
-    async pokemonDetail(id, number, name, total) {
+    pokemonDetail(id, number, name, total) {
       this.pokemonImgIsLoading = true;
       const url = `https://api.eien-development.com/api/pokemon-api/pokemons/${id}/sprite`;
-      const response = await fetch(url);
+      const fetchURL = fetch(url)
+      .then(response => { 
+        return response.url
+      })
+      .catch(error => {
+        throw error;
+      });
+      // console.log(fetchURL)
 
-      if (!response.ok) {
+      if (!fetchURL) {
         this.detailResults.img = '';
       } else {
-        this.pokemonImgIsLoading = false;
-        this.detailResults.img = response.url;
+        this.detailResults.img = url;
       }
 
       // this.detailResults.img= imgUrl;
@@ -187,6 +193,7 @@ export default {
       this.detailResults.number = number;
       this.detailResults.total = total;
       this.pokemonIsDetail = true;
+      this.pokemonImgIsLoading = false;
     },
     closeDialog() {
       this.detailResults.img = null;
