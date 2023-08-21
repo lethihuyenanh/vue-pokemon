@@ -1,114 +1,62 @@
 <template>
-  <transition name="dialog">
-    <base-dialog
-      v-if="pokemonIsDetail"
-      @close="closeDialog"
-      title="Dummy title"
-    >
-      <template #default>
-        <p>Test 1</p>
-        <p>Test 2</p>
-      </template>
-      <template #actions>
-        <base-button @click="closeDialog">Close</base-button>
-      </template>
-    </base-dialog>
-  </transition>
-  <base-card>
+  <base-dialog v-if="pokemonIsDetail" @close="closeDialog" :title="detailResults.name">
+    <template #default>
+      <figure>
+        <base-snipper v-if="pokemonImgIsLoading"></base-snipper>
+        <img v-else :src="detailResults.img" alt="">
+      </figure>
+      <p class="number">#{{ detailResults.number }}</p>
+      <p class="total">TOTAL: <b>{{ detailResults.total }}</b></p>
+    </template>
+    <template #actions>
+      <base-button @click="closeDialog">Close</base-button>
+    </template>
+  </base-dialog>
+  <div ref="targetRef1">
     <section>
       <h2>Pokemon Sort</h2>
       <pokemon-sort @change-sort="setSort"></pokemon-sort>
       <pokemon-filter @change-filter="setFilters"></pokemon-filter>
     </section>
-    <section>
+    <section ref="targetRef2">
       <h2>Pokemon List</h2>
       <ul class="items-wrapper" v-if="hasPokemon">
-        <li
-          v-for="pokemon in sortedPokemons"
-          :key="pokemon"
-          :id="pokemon"
-          @click="pokemonDetail(pokemon.number)"
-        >
+        <li v-for="pokemon in sortedPokemons" :key="pokemon.id" :id="pokemon.id"
+          @click="pokemonDetail(pokemon.id, pokemon.number, pokemon.name, pokemon.total)">
+          <figure><img src="../../assets/images/img_default.png" alt="" width="100" height="100" decoding="async" />
+          </figure>
           <h3>{{ pokemon.name }}</h3>
+          <p class="tag-number" :status="sorting === 'number' ? 'active' : ''" v-if="pokemon.number">#{{ pokemon.number }}
+          </p>
           <div class="badge-list">
-            <base-badge
-              :status="sorting === 'number' ? 'active' : ''"
-              mode="bgColor-number"
-              v-if="pokemon.number"
-              >number: <b>{{ pokemon.number }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'type_1' ? 'active' : ''"
-              mode="bgColor-type_1"
-              v-if="pokemon.type_1"
-              >type_1: <b>{{ pokemon.type_1 }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'type_2' ? 'active' : ''"
-              mode="bgColor-type_2"
-              v-if="pokemon.type_2"
-              >type_2: <b>{{ pokemon.type_2 }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'total' ? 'active' : ''"
-              mode="bgColor-total"
-              v-if="pokemon.total"
-              >total: <b>{{ pokemon.total }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'hp' ? 'active' : ''"
-              mode="bgColor-hp"
-              v-if="pokemon.hp"
-              >hp: <b>{{ pokemon.hp }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'attack' ? 'active' : ''"
-              mode="bgColor-attack"
-              v-if="pokemon.attack"
-              >attack: <b>{{ pokemon.attack }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'defense' ? 'active' : ''"
-              mode="bgColor-defense"
-              v-if="pokemon.defense"
-              >defense: <b>{{ pokemon.defense }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'sp_atk' ? 'active' : ''"
-              mode="bgColor-sp_atk"
-              v-if="pokemon.sp_atk"
-              >sp_atk: <b>{{ pokemon.sp_atk }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'sp_def' ? 'active' : ''"
-              mode="bgColor-sp_def"
-              v-if="pokemon.sp_def"
-              >sp_def: <b>{{ pokemon.sp_def }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'speed' ? 'active' : ''"
-              mode="bgColor-speed"
-              v-if="pokemon.speed"
-              >speed: <b>{{ pokemon.speed }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'generation' ? 'active' : ''"
-              mode="bgColor-generation"
-              v-if="pokemon.generation"
-              >generation: <b>{{ pokemon.generation }}</b></base-badge
-            >
-            <base-badge
-              :status="sorting === 'legendary' ? 'active' : ''"
-              mode="bgColor-legendary"
-              v-if="pokemon.legendary"
-              >legendary: <b>{{ pokemon.legendary }}</b></base-badge
-            >
+            <base-badge :status="sorting === 'type_1' ? 'active' : ''" mode="bgColor-type_1" v-if="pokemon.type_1">type_1:
+              <b>{{ pokemon.type_1 }}</b></base-badge>
+            <base-badge :status="sorting === 'type_2' ? 'active' : ''" mode="bgColor-type_2" v-if="pokemon.type_2">type_2:
+              <b>{{ pokemon.type_2 }}</b></base-badge>
+            <base-badge :status="sorting === 'total' ? 'active' : ''" mode="bgColor-total" v-if="pokemon.total">total:
+              <b>{{ pokemon.total }}</b></base-badge>
+            <base-badge :status="sorting === 'hp' ? 'active' : ''" mode="bgColor-hp" v-if="pokemon.hp">hp: <b>{{
+              pokemon.hp }}</b></base-badge>
+            <base-badge :status="sorting === 'attack' ? 'active' : ''" mode="bgColor-attack" v-if="pokemon.attack">attack:
+              <b>{{ pokemon.attack }}</b></base-badge>
+            <base-badge :status="sorting === 'defense' ? 'active' : ''" mode="bgColor-defense"
+              v-if="pokemon.defense">defense: <b>{{ pokemon.defense }}</b></base-badge>
+            <base-badge :status="sorting === 'sp_atk' ? 'active' : ''" mode="bgColor-sp_atk" v-if="pokemon.sp_atk">sp_atk:
+              <b>{{ pokemon.sp_atk }}</b></base-badge>
+            <base-badge :status="sorting === 'sp_def' ? 'active' : ''" mode="bgColor-sp_def" v-if="pokemon.sp_def">sp_def:
+              <b>{{ pokemon.sp_def }}</b></base-badge>
+            <base-badge :status="sorting === 'speed' ? 'active' : ''" mode="bgColor-speed" v-if="pokemon.speed">speed:
+              <b>{{ pokemon.speed }}</b></base-badge>
+            <base-badge :status="sorting === 'generation' ? 'active' : ''" mode="bgColor-generation"
+              v-if="pokemon.generation">generation: <b>{{ pokemon.generation }}</b></base-badge>
+            <base-badge :status="sorting === 'legendary' ? 'active' : ''" mode="bgColor-legendary"
+              v-if="pokemon.legendary">legendary: <b>{{ pokemon.legendary }}</b></base-badge>
           </div>
         </li>
       </ul>
       <p v-else class="empty">There is no Pokemon!</p>
     </section>
-  </base-card>
+  </div>
 </template>
 
 <script>
@@ -129,6 +77,13 @@ export default {
       },
       sorting: null,
       pokemonIsDetail: false,
+      pokemonImgIsLoading: true,
+      detailResults: {
+        img: null,
+        name: null,
+        number: null,
+        total: null,
+      },
     };
   },
   computed: {
@@ -152,7 +107,11 @@ export default {
         return this.filteredPokemons;
       }
       return this.filteredPokemons.slice().sort((u1, u2) => {
-        if (this.sorting === "number" && u1.number > u2.number) {
+        if (this.sorting === "name" && u1.name > u2.name) {
+          return 1;
+        } else if (this.sorting === "name") {
+          return -1;
+        } else if (this.sorting === "number" && u1.number > u2.number) {
           return 1;
         } else if (this.sorting === "number") {
           return -1;
@@ -191,15 +150,35 @@ export default {
   methods: {
     setFilters(updatedFilter) {
       this.activeFilters = updatedFilter;
+      this.$refs.targetRef1.scrollIntoView({ behavior: 'smooth' });
     },
     setSort(itemId) {
       this.sorting = itemId;
+      this.$refs.targetRef2.scrollIntoView({ behavior: 'smooth' });
     },
-    pokemonDetail(id) {
-      console.log(id);
+    async pokemonDetail(id, number, name, total) {
+      this.pokemonImgIsLoading = true;
+      const url = `https://api.eien-development.com/api/pokemon-api/pokemons/${id}/sprite`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        this.detailResults.img = '';
+      } else {
+        this.pokemonImgIsLoading = false;
+        this.detailResults.img = response.url;
+      }
+
+      // this.detailResults.img= imgUrl;
+      this.detailResults.name = name;
+      this.detailResults.number = number;
+      this.detailResults.total = total;
       this.pokemonIsDetail = true;
     },
     closeDialog() {
+      this.detailResults.img = null;
+      this.detailResults.name = null;
+      this.detailResults.number = null;
+      this.detailResults.total = null;
       this.pokemonIsDetail = false;
     },
   },
@@ -210,15 +189,18 @@ export default {
 section {
   padding-top: 1.5rem;
 }
+
 h2 {
   text-align: left;
   color: var(--purple-900);
   border-left: 3px solid var(--purple-900);
   padding-left: 0.5em;
 }
+
 h3 {
   text-align: center;
 }
+
 .items-wrapper {
   list-style: none;
   display: flex;
@@ -234,6 +216,25 @@ h3 {
   border: 1px solid #ccc;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+}
+
+.items-wrapper li:hover,
+.items-wrapper li:active {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  border-color:  var(--amber-600);
+}
+
+.items-wrapper li figure {
+  text-align: center;
+  padding: 1rem;
+}
+
+.items-wrapper li h3 {
+  text-align: center;
+  padding: 1rem;
 }
 
 @media screen and (max-width: 1024px) {
@@ -270,18 +271,20 @@ h3 {
     width: calc(50% - 6px);
   }
 }
+
 .empty {
   text-align: center;
   padding: 2rem 0;
+  border-top: 1px solid var(--purple-900);
+  margin: 1.5rem 0 0;
 }
 
-.dialog-enter-active,
-.dialog-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.dialog-enter-from,
-.dialog-leave-to {
-  opacity: 0;
+.tag-number {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.75rem;
+  font-size: 150%;
+  font-weight: 700;
+  opacity: 0.65;
 }
 </style>

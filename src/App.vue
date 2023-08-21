@@ -133,6 +133,9 @@ export default {
   box-sizing: border-box;
 }
 
+.bgColor-name {
+  background-color: var(--amber-600);
+}
 .bgColor-number {
   background-color: var(--gray-600);
 }
@@ -202,7 +205,7 @@ export default {
   padding: 0.1em;
   padding-left: 30px;
   border-radius: 3px;
-  box-shadow: 2px 2px 5px rgba(0,0, 0, 0.2);
+  box-shadow: 2px 2px 5px rgba(0,0, 0, 0.5);
   transition: box-shadow 0.3s ease-out;
 }
 .list input {
@@ -213,7 +216,7 @@ export default {
   transform: translateY(-50%);
 }
 .list input:checked + label {
-  box-shadow: 3px 3px 5px rgba(0,0, 0, 0.5) inset;
+  box-shadow: 3px 3px 5px 2px rgba(0,0, 0, 0.5) inset;
 }
 
 </style>

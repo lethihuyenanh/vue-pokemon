@@ -24,7 +24,9 @@ button {
   cursor: pointer;
   outline: none;
   transition: transform 0.3s ease-out;
-  will-change: auto;
+  will-change: transform;
+  background-color: var(--amber-600);
+  transform: scale(1);
 }
 button:active,
 button:hover {

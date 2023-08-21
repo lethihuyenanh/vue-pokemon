@@ -1,6 +1,10 @@
 <template>
   <ul class="list">
     <li>
+      <input type="radio" name="sort" id="name" value="name" @change="setSort" />
+      <label  class="bgColor-name" for="name">Sort by <b>name</b></label>
+    </li>
+    <li>
       <input type="radio" name="sort" id="number" value="number" @change="setSort" />
       <label  class="bgColor-number" for="number">Sort by <b>number</b></label>
     </li>
