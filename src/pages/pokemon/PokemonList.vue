@@ -12,14 +12,15 @@
       <base-button @click="closeDialog">Close</base-button>
     </template>
   </base-dialog>
-  <div ref="targetRef1">
-    <section>
-      <h2>Pokemon Sort</h2>
+  <div>
+    <base-section>
+      <h2 ref="targetRef1">Pokemon Sort</h2>
       <pokemon-sort @change-sort="setSort"></pokemon-sort>
       <pokemon-filter @change-filter="setFilters"></pokemon-filter>
-    </section>
-    <section ref="targetRef2">
-      <h2>Pokemon List</h2>
+      <base-search @search="updateSearch" :search-term="enteredSearchTerm"></base-search>
+    </base-section>
+    <base-section>
+      <h2 ref="targetRef2">Pokemon List</h2>
       <ul class="items-wrapper" v-if="hasPokemon">
         <li v-for="pokemon in sortedPokemons" :key="pokemon.id" :id="pokemon.id"
           @click="pokemonDetail(pokemon.id, pokemon.number, pokemon.name, pokemon.total)">
@@ -55,7 +56,7 @@
         </li>
       </ul>
       <p v-else class="empty">There is no Pokemon!</p>
-    </section>
+    </base-section>
   </div>
 </template>
 
@@ -84,29 +85,42 @@ export default {
         number: null,
         total: null,
       },
+      enteredSearchTerm: '', //user typing the text
+      activeSearchTerm: '', //
     };
   },
   computed: {
-    filteredPokemons() {
-      const pokemons = this.results;
-      return pokemons.filter((item) => {
-        if (this.activeFilters.type_1 && !!item.type_1 > 0) {
+    availablePokemons() {
+      // const pokemons = this.results;
+      // return pokemons.filter((item) => {
+      //   if (this.activeFilters.type_1 && !!item.type_1 > 0) {
+      //     return true;
+      //   }
+      //   if (this.activeFilters.type_2 && !!item.type_2 > 0) {
+      //     return true;
+      //   }
+      //   return false;
+      // });
+      let filtered = this.results.filter((item) => {
+        if (this.activeFilters.type_1 && !!item.type_1 > 0 && item.name.includes(this.activeSearchTerm)) {
           return true;
         }
-        if (this.activeFilters.type_2 && !!item.type_2 > 0) {
+        if (this.activeFilters.type_2 && !!item.type_2 > 0 && item.name.includes(this.activeSearchTerm)) {
           return true;
         }
         return false;
       });
+      
+      return filtered;
     },
     hasPokemon() {
-      return this.filteredPokemons && this.filteredPokemons.length > 0;
+      return this.availablePokemons && this.availablePokemons.length > 0;
     },
     sortedPokemons() {
       if (!this.sorting) {
-        return this.filteredPokemons;
+        return this.availablePokemons;
       }
-      return this.filteredPokemons.slice().sort((u1, u2) => {
+      return this.availablePokemons.slice().sort((u1, u2) => {
         if (this.sorting === "name" && u1.name > u2.name) {
           return 1;
         } else if (this.sorting === "name") {
@@ -181,7 +195,21 @@ export default {
       this.detailResults.total = null;
       this.pokemonIsDetail = false;
     },
+    updateSearch(val) {
+      this.enteredSearchTerm = val;
+      // console.log(this.enteredSearchTerm);
+    }
   },
+  watch: {
+    //Unclear: Why need to check this value
+    enteredSearchTerm(val) {
+      setTimeout(() => {
+        if (val === this.enteredSearchTerm) {
+          this.activeSearchTerm = val;
+        }
+      }, 300);
+    }
+  }
 };
 </script>
 
