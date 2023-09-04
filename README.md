@@ -1,5 +1,10 @@
 # vue-pokemon-app
 
+## View DEMO:
+```
+[https://vue-pokemon-api.web.app](https://vue-pokemon-api.web.app)
+```
+
 ## Project setup
 ```
 npm install
@@ -22,8 +27,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-### Hosting URL test:
-```
-https://vue-pokemon-api.web.app
-```
