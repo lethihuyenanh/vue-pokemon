@@ -4,7 +4,6 @@
 
 [https://vue-pokemon-api.web.app](https://vue-pokemon-api.web.app)
 
-
 ## Project setup
 ```
 npm install
