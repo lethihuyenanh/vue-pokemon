@@ -125,7 +125,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #222;
+  color: #000;
 }
 * {
   margin: 0;
@@ -181,7 +181,8 @@ export default {
 
 .list li {
   display: flex;
-  width: calc(25% - 10px);
+  /* width: calc(25% - 10px); */
+  width: 100%;
   margin: 5px;
   color: #FFF;
   position: relative;
@@ -194,9 +195,9 @@ export default {
 }
 
 @media screen and (max-width: 767px) {
-  /* .list li {
-    width: 100%
-  } */
+  .list li {
+    width: calc(50% - 10px);
+  }
 }
 
 .list label {

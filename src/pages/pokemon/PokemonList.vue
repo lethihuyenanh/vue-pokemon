@@ -12,14 +12,14 @@
       <base-button @click="closeDialog">Close</base-button>
     </template>
   </base-dialog>
-  <div>
-    <base-section>
+  <div class="pokemon-wrap">
+    <base-section class="pokemon-wrap__side">
       <h2 ref="targetRef1">Pokemon Sort</h2>
       <pokemon-sort @change-sort="setSort"></pokemon-sort>
       <pokemon-filter @change-filter="setFilters"></pokemon-filter>
       <base-search @search="updateSearch" :search-term="enteredSearchTerm"></base-search>
     </base-section>
-    <base-section>
+    <base-section class="pokemon-wrap__content">
       <h2 ref="targetRef2">Pokemon List</h2>
       <ul class="items-wrapper" v-if="hasPokemon">
         <li v-for="pokemon in sortedPokemons" :key="pokemon.id" :id="pokemon.id"
@@ -221,6 +221,22 @@ export default {
 </script>
 
 <style scoped>
+.pokemon-wrap {
+  padding-bottom: 1.5rem;
+}
+@media screen and (min-width: 1025px) {
+.pokemon-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+.pokemon-wrap__side {
+  width: 250px;
+}
+.pokemon-wrap__content {
+  width: calc(100% - 270px);
+}  
+}
+
 section {
   padding-top: 1.5rem;
 }
@@ -254,17 +270,25 @@ h3 {
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease-out;
+  background: linear-gradient(-217deg, rgba(255, 0, 0, 0.5), rgba(255, 0, 0, 0) 70.71%), linear-gradient(127deg, rgba(0, 255, 0, 0.5), rgba(0, 255, 0, 0) 70.71%), linear-gradient(336deg, rgba(0, 0, 255, 0.5), rgba(0, 0, 255, 0) 70.71%);
 }
 
 .items-wrapper li:hover,
 .items-wrapper li:active {
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  border-color:  var(--amber-600);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4);
+  border-color:  var(--purple-900);
+}
+.items-wrapper li:hover figure img {
+  transform: scale(1.05);
 }
 
 .items-wrapper li figure {
   text-align: center;
   padding: 1rem;
+}
+.items-wrapper li figure img {
+  transition: transform 0.3s ease-out;
+  transform: scale(1);
 }
 
 .items-wrapper li h3 {
